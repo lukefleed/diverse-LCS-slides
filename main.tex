@@ -1,6 +1,9 @@
 
 % Inbuilt themes in beamer
 \documentclass{beamer}
+\usepackage{bbm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 % Theme choice:
 \usetheme{Boadilla}
@@ -10,6 +13,8 @@
 \author{Luca Lombardo}
 \date{Seminar for the course of Bioinformatics}
 % \logo{\large \LaTeX{}}
+
+
 
 \begin{document}
 
@@ -31,7 +36,9 @@
 \begin{definition}
     Given a set of $m$ strings $S = \{ S_1, S_2, \ldots, S_m \}$, a \textbf{common subsequence} (\emph{CS}) is a sequence that appears in all $m$ strings. A \textbf{longest common subsequence} \emph{LCS} is a common subsequence of maximum length. We denote the set of all LCSs of $S$ as $LCS(S)$.
 \end{definition}
-The goal is to find a diverse set of solutions to the LCS problem under the Hamming distance.
+\begin{alertblock}{Goal}
+    The goal is to find a diverse set of solutions to the LCS problem under the Hamming distance.
+\end{alertblock}
 \begin{definition}
     Given two strings $X, Y \in \Sigma^r$, the \textbf{Hamming distance} between $X$ and $Y$, denoted with $d_H(X,Y)$, is the number of positions at which the corresponding symbols differ.
 \end{definition}
@@ -125,21 +132,108 @@ The goal is to find a diverse set of solutions to the LCS problem under the Hamm
 
 \end{frame}
 
+\begin{frame}{$\Sigma$-DAGs for LCSs and Diverse String Sets}
+
+    \begin{block}{Lemma ($\Sigma$-DAG for LCSs)}
+        For any constant \( m \geq 1 \) and set \( S = \{S_1, \dots, S_m\} \subseteq \Sigma^* \) of \( m \) strings, there exists a $\Sigma$-DAG \( G \) of polynomial size in \( \ell := \text{maxlen}(S) \) such that \( L(G) = \text{LCS}(S) \) and can be computed in polynomial time $l$\\
+    \end{block}
+
+    % \begin{block}{Proof (Outline)}
+    %     \begin{itemize}
+    %         \item Construct \( N \), an \( m \)-dimensional grid graph in \( O(\ell^m) \) time and space.
+    %         \item Edge labels: Symbols from \( \Sigma \cup \{\varepsilon\} \), total edges \( O(\ell^m) \).
+    %         \item \( (s, t) \)-paths in \( N \) represent LCS of \( S \).
+    %         \item Apply $\epsilon$-removal to obtain a $\Sigma$-DAG \( G \) in \( O(|\Sigma| \cdot \ell^m) \) time and space.
+    %     \end{itemize}
+    % \end{block}
+
+    \begin{exampleblock}{Consequence of the Lemma}
+        \begin{itemize}
+            \item \textbf{If} \textsc{Max-Min} (or \textsc{Max-Sum}) \textsc{Diverse String Set} solvable in \( f(M, K, r, \Delta) \),
+            \item \textbf{Then} \textsc{Max-Min} (or \textsc{Max-Sum}) \textsc{Diverse LCSs} on \( S \subseteq \Sigma^r \) solvable in \( O(|\Sigma| \cdot \ell^m + f(\ell^m, K, r, \Delta)) \) time.
+        \end{itemize}
+        where \( \ell = \text{maxlen}(S) \)
+    \end{exampleblock}
+
+\end{frame}
+
+
 \section{Exact Algorithms for Bounded Number of Diverse Strings}
 \subsection{\textsc{Max-Min Diverse String Set} problem}
 \begin{frame}
     \frametitle{Algorithm for \textsc{Max-Min Diverse String Set} problem}
-
-
-
+    % \begin{alertblock}{Brute force approach}
+    %       \begin{itemize}
+    %         \item \textbf{Complexity}: $O(|L(G)|^K)$ by enumerating all combinations of $K$ $(s,t)$-paths in $G$ and selecting a $\Delta$-diverse solution $\mathcal{X} \subseteq L(G)$.
+    %         \item \textbf{Cons}: Impractical, $|L(G)|$ can be exponential in the number of edges
+    %       \end{itemize}
+    % \end{alertblock}
+    \begin{block}{Dynamic Programming Approach}
+            \textbf{Pattern of Path Tuple:} For each \( d \leq r \) and \( K \)-tuple of length-\( d \) paths \( P = (P_1, \dots, P_K) \),
+            define pattern \( \text{Pattern}(P) = (\mathbf{w}, \mathbf{Z}) \), where:
+            \begin{itemize}
+                \item \( \mathbf{w} = (w_1, \ldots, w_K) \): \( K \)-tuple of vertices representing endpoints of \( P_i \) paths.
+                \item \( \mathbf{Z} = (Z_{i,j}) \): Upper triangular matrix of Hamming distances, where \( Z_{i,j} = \min \{\Delta, d_H(\text{str}(P_i), \text{str}(P_j))\} \).
+        \end{itemize}
+    \end{block}
+    \begin{block}{DP Table of Weights}
+        \begin{equation}
+            \text{Weights}: V^K \times (\Delta \cup \{0\})^{K \times K} \to \{0, 1\}
+        \end{equation}
+        Boolean matrix where \( \text{Weights}(\mathbf{w}, \mathbf{Z}) = 1 \) iff \( (\mathbf{w}, \mathbf{Z}) \) matches pattern \( \text{Pattern}(P) \) for some \( K \)-tuple of paths of length \( d \) from $s$ to $\mathbf{w}$.
+    \end{block}
+    % $Z$ takes at most $\Gamma = O(\Delta^{(K^2)} K^2)$ different values $\Longrightarrow$ $O(K^2 \log \Delta)$ bits
 \end{frame}
 
 \begin{frame}
     \frametitle{Algorithm for \textsc{Max-Min Diverse String Set} problem}
+    % \begin{lemma}[Recurrence for Weights]
+    %     $\forall ~ \mathbf{w} \in V^K$ and $\forall ~ Z = (Z_{i,j})_{i<j} \in (\Delta \cup \{0\})^{K \times K}$, the entry $\text{Weights}(\mathbf{w}, Z)$ satisfies the following:
+    %     \begin{enumerate}
+    %         \item \texttt{Base Case}: If $\mathbf{w} = \mathbf{s}$ and $Z = \mathbf{0}$, then $\text{Weights}(\mathbf{w}, Z) = 1$.
+    %         \item \texttt{Inductive Case}: If $\mathbf{w} \neq \mathbf{s}$ and all vertices in $\mathbf{w}$ have the same depth $d$, then $\text{Weights}(\mathbf{w}, Z) = 1$ iff there exists:
+    %         \begin{itemize}
+    %             \item $\mathbf{v} = (v_1, \ldots, v_K) \in V_{d-1}^K$ such that each $v_i$ is a parent of $w_i$
+    %             \item $U = (U_{i,j})_{i<j} \in (\Delta \cup \{0\})^{K \times K}$ such that $\text{Weights}(\mathbf{v}, U) = 1$ and $Z_{i,j} = U_{i,j} + \mathbbm{1}\{c_i \neq c_j\}$ for all $1 \leq i < j \leq K$
+    %         \end{itemize}
+    %         \item \texttt{Otherwise}: $\text{Weights}(\mathbf{w}, Z) = 0$.
+    %     \end{enumerate}
+    % \end{lemma}
+    \begin{algorithm}[H] \label{alg:dp}
+        \footnotesize{\caption{}}
+        \footnotesize{\begin{algorithmic}[1]
+            \State Set \texttt{Weights}($\mathbf{s}, Z$) $=0$ for all $Z \in (\Delta \cup \{0\})^{K \times K}$ and \texttt{Weights}($\mathbf{s}, \mathbf{0}$) $\gets 1$
+            \For{$d \gets 1, \dots , r$}
+                \For{$\mathbf{v} \gets (v_1, \dots v_K) \in (V_d)^K $}
+                    \For{$(v_1, c_1, w_1) \in E^+(v_1), \dots, (v_K, c_K, w_K) \in E^+(v_K)$}
+                        \State Set $\mathbf{w} = (w_1, \dots, w_K)$
+                        \For{$U \in (\Delta \cup \{0\})^{K \times K}$ such that \texttt{Weights}($\mathbf{v}, U$) = 1}
+                            \State Set $Z = (Z_{i,j})_{i<j}$ with $Z_{i,j} \gets \min \{\Delta, U_{i,j} + \mathbbm{1}\{c_i \neq c_j\}\} \quad \forall ~ i, j \in K$
+                            \State Set \texttt{Weights}($\mathbf{w}, Z$) $\gets 1$ \Comment{Update}
+                        \EndFor
+                    \EndFor
+                \EndFor
+            \EndFor
+            \State Answer \texttt{Yes} if \texttt{Weights}($\mathbf{t}, Z$) = 1 and $D_{d_H}^{\text{min}}(Z) \geq \Delta$ for some $Z$, else \texttt{No}
+        \end{algorithmic}}
+    \end{algorithm}
+    \small{For any $K \geq 1$ and $\Delta \geq 0$, it solves the \textsc{Max-Min Diverse String Set} problem in $O(\Delta^{K^2} K^2 M^K (\log |V| + \log \Delta))$ time and space when an input string set $L$ is represented by a $\Sigma$-DAG $G$ with size($G$) = $M$}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Example Run of the Algorithm}
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=1\textwidth]{6Kc2XEQ.png}
+            \caption{(a) An input $\Sigma$-DAG $G_1$ over $\Sigma = \{A, B, C, D, E\}$ for the set of all longest common subsequences of two strings $X_1 = \text{ABABCDDEE}$ and $Y_1 = \text{ABCBAEEDD}$ and (b) an example run of Algorithm 1 based on dynamic programming with $K = 3$ on an input $G_1$}
+            \label{fig:example}
+        \end{figure}
+
 
 
 
 \end{frame}
+
 
 \subsection{\textsc{Max-Sum Diverse String Set} problem}
 \begin{frame}
