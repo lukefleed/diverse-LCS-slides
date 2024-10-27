@@ -1,0 +1,196 @@
+
+% Inbuilt themes in beamer
+\documentclass{beamer}
+
+% Theme choice:
+\usetheme{Boadilla}
+
+% Title page details:
+\title{Finding Diverse Strings and Longest Common Subsequences in a Graph}
+\author{Luca Lombardo}
+\date{Seminar for the course of Bioinformatics}
+% \logo{\large \LaTeX{}}
+
+\begin{document}
+
+% Title page frame
+\begin{frame}
+    \titlepage
+\end{frame}
+
+
+% Outline frame
+\begin{frame}{Structure of the Presentation}
+    \tableofcontents
+\end{frame}
+
+% Lists frame
+\section{Introduction to the problems}
+\subsection{Diverse Strings Problems}
+\begin{frame}{Longest Common Subsequence (LCS)}
+\begin{definition}
+    Given a set of $m$ strings $S = \{ S_1, S_2, \ldots, S_m \}$, a \textbf{common subsequence} (\emph{CS}) is a sequence that appears in all $m$ strings. A \textbf{longest common subsequence} \emph{LCS} is a common subsequence of maximum length. We denote the set of all LCSs of $S$ as $LCS(S)$.
+\end{definition}
+The goal is to find a diverse set of solutions to the LCS problem under the Hamming distance.
+\begin{definition}
+    Given two strings $X, Y \in \Sigma^r$, the \textbf{Hamming distance} between $X$ and $Y$, denoted with $d_H(X,Y)$, is the number of positions at which the corresponding symbols differ.
+\end{definition}
+\end{frame}
+
+% The LCS problem can be solved in polynomial time for constant $m \geq 2$ using dynamic    programming requiring $O(n^m)$ time. Where $n$ is the maximum length of the $m$ strings.
+
+% \begin{alertblock}{}
+%     When $m$ is unrestricted, the LCS problem is NP-complete.
+% \end{alertblock}
+
+\begin{frame}
+    \frametitle{A simple example}
+    Add here the example of the paper
+
+
+\end{frame}
+
+
+
+
+\begin{frame}{Efficient methods for finding a diverse set of solutions}
+
+    More formally, let's consider the following two diversity measures for a multiset $\mathcal{X} = \{X_1, X_2, \ldots, X_K\} \subseteq \Sigma^r$ of solutions, allowing repetitions:
+    \begin{align}
+        D_{d_H}^{\text{sum}} (\mathcal{X}) &= \sum_{1 \leq i < j \leq K} d_H(X_i, X_j) & \text{\textsc{Max-Sum Diversity}} \\
+        D_{d_H}^{\text{min}} (\mathcal{X}) &= \min_{i < j} d_H(X_i, X_j) & \text{\textsc{Max-Min Diversity}}
+    \end{align}
+
+    \begin{block}{Notation}
+        A subset $\mathcal{X} \subseteq \Sigma^r$ is $\Delta$-diverse w.r.t. $D_{d_H}^{\tau}$ if $D_{d_H}^{\tau}(\mathcal{X}) \geq \Delta$ for some $\Delta \geq 0$.
+    \end{block}
+    Where for $\tau \in \{sum, min\}$, $D_{d_H}^{\tau}$ denotes one of the two diversity measures.
+\end{frame}
+
+
+\begin{frame}{Two problems}
+
+    \begin{alertblock}{Problem 1: \textsc{Diverse LCSs with Diversity measure} $D_{d_H}^{\tau}$}
+        \emph{Input:} A set $S = \{S_1, S_2, \ldots, S_m\}$ of $m \geq 2$ strings over $\Sigma$, an integer $K \geq 1$ and $\Delta \geq 0$. \\
+        \emph{Question:} Is there some set $\mathcal{X} \subseteq LCS(S)$ such that $\mathcal{X}= K$ and $D_{d_H}^{\tau}(\mathcal{X}) \geq \Delta$?
+    \end{alertblock}
+    \begin{alertblock}{Problem 2: \textsc{Diverse String Set}}
+        \emph{Input:} $K, r, \Delta \in \mathbb{Z}$ and a $\Sigma$-DAG $G$ for a set $L(G) \subseteq \Sigma^r$ of strings. \\
+        \emph{Question:} Decide if there exists some subset $\mathcal{X} \subseteq L(G)$ such that $|\mathcal{X}| = K$ and $D_{d_H}^{\tau}(\mathcal{X}) \geq \Delta$.
+    \end{alertblock}
+
+\end{frame}
+
+\subsection{$\Sigma$-DAG for LCSs}
+\begin{frame}{$\Sigma$-Labeled Directed Acyclic Graphs ($\Sigma$-DAGs)}
+
+    \begin{block}{Definitions}
+        \begin{itemize}
+            \item \textbf{Alphabet ($\Sigma$)}: Set of symbols.
+            \item \textbf{String Set (Language)}: \( L = \{ X_1, X_2, \dots, X_n \} \subseteq \Sigma^* \), with:
+            \begin{itemize}
+                \item \textbf{Total Length}: \( ||L|| = \sum_{X \in L} |X| \)
+                \item \textbf{Max Length}: \( \text{maxLen}(L) = \max_{X \in L} |X| \)
+            \end{itemize}
+            \item \textbf{r-String}: Any string \( X \) where \( |X| = r \)
+        \end{itemize}
+    \end{block}
+
+    \begin{block}{$\Sigma$-DAG Structure}
+        A graph \( G = (V, E, s, t) \) with:
+        \begin{itemize}
+            \item \( V \): vertices, \( E \): labeled edges \( (v, c, w) \) with \( c \in \Sigma \)
+            \item \textbf{Source} \( s \) and \textbf{Sink} \( t \) such that paths exist from \( s \) to all vertices
+            \item \textbf{Size}: \( \text{size}(G) \), the number of its labeled edges
+        \end{itemize}
+    \end{block}
+\end{frame}
+\begin{frame}{$\Sigma$-Labeled Directed Acyclic Graphs ($\Sigma$-DAGs)}
+    Any path $P = (e_1, e_2, \ldots, e_n)$ of outgoing edges \emph{spells out} a string str($P$) = $c_1c_2\ldots c_n \in \Sigma^n$ where $c_i$ is the label of edge $e_i$.
+
+    \begin{block}{Language Representation}
+        A $\Sigma$-DAG represents \( L(G) \subset \Sigma^* \): all strings spelled from paths \( s \to t \). Equivalent to an NFA over $\Sigma$ with initial \( s \), final \( t \), and no $\epsilon$-edges.
+    \end{block}
+
+    \begin{exampleblock}{Remarks}
+        \begin{itemize}
+            \item For any set \( L \) of strings, a $\Sigma$-DAG \( G \) exists s.t. \( L(G) = L \) and \( \text{size}(G) \leq ||L|| \). Construction time: \( O(||L|| \log |\Sigma|) \).
+            \item If \( G \) represents a set \( L \) of \( r \)-strings ($L \subseteq \Sigma^r, r \geq 0$), all paths \( s \to v \) have the same length $d \leq r$.
+        \end{itemize}
+    \end{exampleblock}
+
+    % \begin{block}{Depth of a Vertex}
+    %     \textbf{Depth} of vertex \( v \): length of path \( s \to v \). Vertices partitioned by depth.
+    % \end{block}
+
+\end{frame}
+
+\section{Exact Algorithms for Bounded Number of Diverse Strings}
+\subsection{\textsc{Max-Min Diverse String Set} problem}
+\begin{frame}
+    \frametitle{Algorithm for \textsc{Max-Min Diverse String Set} problem}
+
+
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Algorithm for \textsc{Max-Min Diverse String Set} problem}
+
+
+
+\end{frame}
+
+\subsection{\textsc{Max-Sum Diverse String Set} problem}
+\begin{frame}
+    \frametitle{Algorithm for \textsc{Max-Sum Diverse String Set} problem}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Algorithm for \textsc{Max-Sum Diverse String Set} problem}
+
+\end{frame}
+
+\section{Approximation Algorithms for Unbounded Number of Diverse Strings}
+\subsection{Approximation Algorithm for \textsc{Max-Min Diverse String Set} problem}
+\begin{frame}
+    \frametitle{\textsc{Max-Min Diverse String Set} problem}
+
+\end{frame}
+
+\subsection{\textsc{Max-Sum Farthest} r-\textsc{String} problem}
+\begin{frame}
+    \frametitle{\textsc{Max-Sum Farthest} r-\textsc{String} problem}
+\end{frame}
+
+\section{FPT Algorithms for Bounded Number and Length of Diverse Strings}
+\begin{frame}
+    \frametitle{FPT Algorithms for Bounded Number and Length of Diverse Strings}
+
+
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{FPT Algorithms for Bounded Number and Length of Diverse Strings}
+
+
+
+\end{frame}
+
+\section{Hardness Results}
+\subsection{Hardness of Diverse String Set for Unbounded $K$}
+\begin{frame}
+    \frametitle{Hardness of Diverse String Set for Unbounded $K$}
+
+\end{frame}
+
+\subsection{Hardness of Diverse String LCSs for Unbounded $K$}
+\begin{frame}
+    \frametitle{Hardness of Diverse String LCSs for Unbounded $K$}
+
+\end{frame}
+
+
+\end{document}
