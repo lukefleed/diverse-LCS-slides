@@ -159,6 +159,14 @@
 
 
 \section{Exact Algorithms for Bounded Number of Diverse Strings}
+% frame with just the title in the center very big
+\begin{frame}
+    \begin{center}
+        \huge{Exact Algorithms for Bounded Number of Diverse Strings}
+    \end{center}
+\end{frame}
+
+
 \subsection{\textsc{Max-Min Diverse String Set} problem}
 \begin{frame}
     \frametitle{Algorithm for \textsc{Max-Min Diverse String Set} problem}
@@ -238,53 +246,137 @@
 \subsection{\textsc{Max-Sum Diverse String Set} problem}
 \begin{frame}
     \frametitle{Algorithm for \textsc{Max-Sum Diverse String Set} problem}
+    \begin{block}{Modify the Max-Sum Diverse String Set problem}
+            Instead of the entire \( K \times K \) weight matrix \( Z \), only the sum \( z = \sum_{i<j} d_H(\text{str}(P_i), \text{str}(P_j)) \) is needed for computing Max-Sum diversity.
+    \end{block}
+
+    \begin{block}{New DP Table Weights}
+        For \( \mathbf{w} = (w_1, \dots, w_K) \) of depth \( 0 \leq d  \leq r\) and integer \( 0 \leq z \leq rK \), define:
+        \[
+        \texttt{Weights}(\mathbf{w}, z) = 1
+        \]
+        if and only if there exists a \( K \)-tuple of length-\( d \) prefix paths \( (P_1, \dots, P_K) \) from \( s \) to \( w_1, \dots, w_K \) with sum of pairwise Hamming distances \( z \).
+    \end{block}
 
 \end{frame}
 
 \begin{frame}
     \frametitle{Algorithm for \textsc{Max-Sum Diverse String Set} problem}
-
+    \begin{algorithm}[H] \label{alg:dp2}
+        \footnotesize{\caption{}}
+        \footnotesize{\begin{algorithmic}[1]
+            \State Set \texttt{Weights}($\mathbf{s}, Z$) $=0$ for all $Z \in (\Delta \cup \{0\})^{K \times K}$ and \texttt{Weights}($\mathbf{s}, \mathbf{0}$) $\gets 1$
+            \For{$d \gets 1, \dots , r$}
+                \For{$\mathbf{v} \gets (v_1, \dots v_K) \in (V_d)^K $}
+                    \For{$(v_1, c_1, w_1) \in E^+(v_1), \dots, (v_K, c_K, w_K) \in E^+(v_K)$}
+                        \State Set $\mathbf{w} = (w_1, \dots, w_K)$
+                        \For{$u \gets (0, \dots, rK)$ such that \texttt{Weights}($\mathbf{v}, U$) = 1}
+                            \State Set $Z = (Z_{i,j})_{i<j}$ with $Z_{i,j} \gets \min \{\Delta, u + \sum_{i<j}\mathbbm{1}\{c_i \neq c_j\}\}$
+                            \State Set \texttt{Weights}($\mathbf{w}, Z$) $\gets 1$ \Comment{Update}
+                        \EndFor
+                    \EndFor
+                \EndFor
+            \EndFor
+            \State Answer \texttt{Yes} if \texttt{Weights}($\mathbf{t}, Z$) = 1 and $D_{d_H}^{\text{min}}(Z) \geq \Delta$ for some $Z$, else \texttt{No}
+        \end{algorithmic}}
+    \end{algorithm}
+    \small{For any $K \geq 1$, \ref{alg:dp2} solves the \textsc{Max-Sum Diverse String Set} under Hamming Distance in $O(\Delta K^2 M^K (\log |V| + \log \Delta))$ time and space, where $M$ is the size of the input $\Sigma$-DAG $G$}
 \end{frame}
 
 \section{Approximation Algorithms for Unbounded Number of Diverse Strings}
+\begin{frame}
+    \begin{center}
+        \huge{Approximation Algorithms for Unbounded Number of Diverse Strings}
+    \end{center}
+\end{frame}
+
 \subsection{Approximation Algorithm for \textsc{Max-Min Diverse String Set} problem}
 \begin{frame}
     \frametitle{\textsc{Max-Min Diverse String Set} problem}
+    Use a local search algorithm for computing approximate solutions $\mathcal{X} \subseteq \mathcal{L}$ with $|\mathcal{X}| = K$ on a finite metric space $(\mathcal{L}, d)$, where $d: \mathcal{L} \times \mathcal{L} \to \mathbb{R}_{\geq 0}$.
 
+    \begin{algorithm}[H] \label{alg:LocalSearch}
+        \footnotesize{\caption{\texttt{LocalSearch}($\mathcal{L}, K, d$)}}
+        \footnotesize{\begin{algorithmic}[1]
+            \State $\mathcal{X} \gets$ arbitrary set of $K$ solutions in $\mathcal{L}$
+            \For{$i \gets 1, \dots, \lceil \frac{K(K-1)}{K+1} \log \frac{(K+2)(K-1)^2}{4} \rceil$}
+                \For{$X \in \mathcal{X}$ s.t $\mathcal{L} \setminus \{X\} \neq \emptyset$}
+                    \State $Y \gets \text{argmax}_{Y \in \mathcal{L} \setminus \{X\}} \sum_{X' \in \mathcal{X} \setminus \{X\}} d(X', Y)$
+                    \State $\mathcal{X} \gets \mathcal{X} \setminus \{X\} \cup \{Y\}$
+                \EndFor
+            \EndFor
+            \State \textbf{return} $\mathcal{X}$
+        \end{algorithmic}}
+    \end{algorithm}
+
+    \begin{theorem}
+        \small{When the distance $d$ is a semi-metric of \emph{negative type} over $\mathcal{X}$, then \textsc{LocalSearch} has improved approximation ratio $(1 - \frac{2}{K})$ for any $K \geq 2$. The Hamming distance $d_H$ over the set of $r$-strings is a semi-metric of negative type.}
+    \end{theorem}
 \end{frame}
 
-\subsection{\textsc{Max-Sum Farthest} r-\textsc{String} problem}
 \begin{frame}
+    How do we solve efficiently the subproblem at line 4 of the \textsc{LocalSearch} algorithm?
     \frametitle{\textsc{Max-Sum Farthest} r-\textsc{String} problem}
+    \begin{lemma}[Max-Sum Farthest $r$-String]
+        For any $K \geq 1$ and $\Delta \geq 0$, \textsc{LocalSearch} computes the farthest $r$-string $Y \in L(G)$ that maximizes $D_{d_H}^{\text{sum}}(Y \cup \mathcal{X})$ over all $r$-strings in $L(G)$ in $O(K \Delta M)$ time and space, where $M$ is the size of the input $\Sigma$-DAG $G$.
+    \end{lemma}
+
+    \begin{theorem}[Polynomial Time Approximation Scheme for unbounded $K$]
+        When $K$ i part of an input, \textsc{Max-Sum Diverse String Set} problem on a $\Sigma$-DAG admits a PTAS
+    \end{theorem}
+    The corresponding result for the \textsc{Max-Sum Diverse LCSs} follows immediately.
+
 \end{frame}
 
 \section{FPT Algorithms for Bounded Number and Length of Diverse Strings}
 \begin{frame}
-    \frametitle{FPT Algorithms for Bounded Number and Length of Diverse Strings}
-
-
-
+    \begin{center}
+        \huge{Fixed-Parameter Tractable (FPT) Algorithms for Bounded Number and Length of Diverse Strings}
+    \end{center}
 \end{frame}
 
 \begin{frame}
-    \frametitle{FPT Algorithms for Bounded Number and Length of Diverse Strings}
-
-
+    \frametitle{FPT Algorithms for \textsc{Max-Min} and \textsc{Max-Sum Diverse String Set} problems}
+    \begin{definition}
+        A problem parametrized with $\kappa$ is said to be \emph{fixed-parameter tractable} (FPT) if there exists an algorithm for the problem running on an input $x$ in time $f(\kappa (x) \cdot |x|)$, where $f$ is a computable function and $c > 0$ is a constant.
+    \end{definition}
+    \begin{theorem}
+        When $r, K, \Delta$ are part of the input, the \textsc{Max-Min Diverse String Set} problem on a $\Sigma$-DAG admits an FPT algorithm.
+    \end{theorem}
+    \begin{theorem}
+        When $r, K, \Delta$ are part of the input, the \textsc{Max-Sum Diverse String Set} problem on a $\Sigma$-graphs for $r$-strings admits an FPT algorithm.
+    \end{theorem}
 
 \end{frame}
 
-\section{Hardness Results}
-\subsection{Hardness of Diverse String Set for Unbounded $K$}
+\section{Conclusions}
 \begin{frame}
-    \frametitle{Hardness of Diverse String Set for Unbounded $K$}
-
+    \frametitle{Conclusions}
+    \begin{itemize}
+        \item When $K$ is bounded, both \textsc{Max-Min} and \textsc{Max-Sum} of both \textsc{Diverse String Set} and \textsc{Diverse LCSs} are solvable in polynomial time using dynamic programming.
+        \item When $K$ is part of the input, the \textsc{Max-Sum} version of the problems admits a PTAS by local search showing that the Hamming distance is a semi-metric of negative type.
+    \end{itemize}
 \end{frame}
 
-\subsection{Hardness of Diverse String LCSs for Unbounded $K$}
-\begin{frame}
-    \frametitle{Hardness of Diverse String LCSs for Unbounded $K$}
 
-\end{frame}
+% \section{Hardness Results}
+% \subsection{Hardness of Diverse String Set for Unbounded $K$}
+
+% \begin{frame}
+%     \frametitle{Hardness results}
+%     \begin{theorem}[NP-Hardness for unbounded $K$]
+%         When $K$ is part of the input, the \textsc{Max-Min Diverse String Set} and \textsc{Max-Sum Diverse String Set} problems on a $\Sigma$-graph for $r$-strings are NP-hard even for any constant $r \geq 3$.
+%     \end{theorem}
+%     \begin{theorem}[Hardness of Diverse LCSs for Unbounded $K$]
+%         Under Hamming distance, the \textsc{Max-Min} (resp. \textsc{Max-Sum}) \textsc{Diverse Set} for $m \geq 2$ strings
+%     \end{theorem}
+% \end{frame}
+
+% \subsection{Hardness of Diverse String LCSs for Unbounded $K$}
+% \begin{frame}
+%     \frametitle{Hardness of Diverse String LCSs for Unbounded $K$}
+
+% \end{frame}
 
 
 \end{document}
