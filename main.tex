@@ -4,6 +4,11 @@
 \usepackage{bbm}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{graphicx}
 
 % Theme choice:
 \usetheme{Boadilla}
@@ -52,8 +57,23 @@
 
 \begin{frame}
     \frametitle{A simple example}
-    Add here the example of the paper
-
+    % Add here the example of the paper
+    \begin{table}[h!]
+        \centering
+        \caption{Longest common subsequences of two input strings $X=ABABCDDEE$ and $Y=ABCBAEEDD.$ over $\Sigma = \{A, B, C, D, E\}$}
+        \begin{tikzpicture}
+            \node [draw, inner sep=10pt] {
+                \begin{tabular}{>{\centering}p{10cm}}
+                    $\epsilon$, $A$, $B$, $C$, $D$, $E$,\\
+                    $AA$, $AB$, $AC$, $AD$, $AE$, $BA$, \ldots, $CD$, $CE$, $DD$, $EE$,\\
+                    $ABA$, $ABB$, $ABC$, $ABD$, \ldots, $CEE$,\\
+                    $ABAD$, $ABAE$, $ABBD$, \ldots, $BCEE$,\\
+                    $\underline{ABADD}$, $\underline{ABAAE}$, $\underline{ABBDD}$,\\
+                    $\underline{ABBEE}$, $\underline{ABCDD}$, $\underline{ABCEE}$
+                \end{tabular}
+            };
+        \end{tikzpicture}
+    \end{table}
 
 \end{frame}
 
@@ -112,6 +132,8 @@
         \end{itemize}
     \end{block}
 \end{frame}
+
+
 \begin{frame}{$\Sigma$-Labeled Directed Acyclic Graphs ($\Sigma$-DAGs)}
     Any path $P = (e_1, e_2, \ldots, e_n)$ of outgoing edges \emph{spells out} a string str($P$) = $c_1c_2\ldots c_n \in \Sigma^n$ where $c_i$ is the label of edge $e_i$.
 
@@ -292,7 +314,7 @@
 
 \subsection{Approximation Algorithm for \textsc{Max-Min Diverse String Set} problem}
 \begin{frame}
-    \frametitle{\textsc{Max-Min Diverse String Set} problem}
+    \frametitle{\textsc{Max-Sum Diverse String Set} problem}
     Use a local search algorithm for computing approximate solutions $\mathcal{X} \subseteq \mathcal{L}$ with $|\mathcal{X}| = K$ on a finite metric space $(\mathcal{L}, d)$, where $d: \mathcal{L} \times \mathcal{L} \to \mathbb{R}_{\geq 0}$.
 
     \begin{algorithm}[H] \label{alg:LocalSearch}
@@ -315,10 +337,32 @@
 \end{frame}
 
 \begin{frame}
-    How do we solve efficiently the subproblem at line 4 of the \textsc{LocalSearch} algorithm?
     \frametitle{\textsc{Max-Sum Farthest} r-\textsc{String} problem}
+    How do we solve efficiently the subproblem at line 4 of the \textsc{LocalSearch} algorithm?
+    \[
+    Y \gets \text{argmax}_{Y \in \mathcal{L} \setminus \{X\}} \sum_{X' \in \mathcal{X} \setminus \{X\}} d(X', Y)
+    \]
+    The following algorithm can be modified to compute such $Y$ by reordering the parent pair $(v, y)$ of each $(w, z)$ and then tracking back
+    % start an algorithm environment
+    \begin{algorithm}[H] \label{alg:ExactMaxSumFarthest}
+        \small{\caption{Decisional \textsc{Max-Sum Farthest} r-\textsc{String}}}
+        \footnotesize{\begin{algorithmic}[1]
+            \State Set $Weights(s, z) := 0$ for all $z \in [\Delta]_+$, and $Weights(s, 0) := 1$\;
+            \For{$d := 1, \dots, r$}
+                \For{$0\le u\le \Delta$ such that $Weights(v, u) := 1$}
+                    \State Set $Weights(w, z) := 1$ for $z := u + \sum_{i \in [K]} \mathbbm{1}\{ c \not= X_i[d] \}$ \Comment{Update}
+                \EndFor
+            \EndFor
+            \State Answer YES if $Weights(t, \Delta) = 1$, and NO otherwise \Comment{Decide}
+        \end{algorithmic}}
+    \end{algorithm}
+\end{frame}
+
+\begin{frame}
+    \frametitle{\textsc{Max-Sum Farthest} r-\textsc{String} problem}
+
     \begin{lemma}[Max-Sum Farthest $r$-String]
-        For any $K \geq 1$ and $\Delta \geq 0$, \textsc{LocalSearch} computes the farthest $r$-string $Y \in L(G)$ that maximizes $D_{d_H}^{\text{sum}}(Y \cup \mathcal{X})$ over all $r$-strings in $L(G)$ in $O(K \Delta M)$ time and space, where $M$ is the size of the input $\Sigma$-DAG $G$.
+        For any $K \geq 1$ and $\Delta \geq 0$, \textsc{Algorithm 3} computes the farthest $r$-string $Y \in L(G)$ that maximizes $D_{d_H}^{\text{sum}}(Y \cup \mathcal{X})$ over all $r$-strings in $L(G)$ in $O(K \Delta M)$ time and space, where $M$ is the size of the input $\Sigma$-DAG $G$.
     \end{lemma}
 
     \begin{theorem}[Polynomial Time Approximation Scheme for unbounded $K$]
@@ -337,26 +381,69 @@
 
 \begin{frame}
     \frametitle{FPT Algorithms for \textsc{Max-Min} and \textsc{Max-Sum Diverse String Set} problems}
-    \begin{definition}
+    \begin{definition}[Fixed-Parameter Tractable (FPT) Algorithm]
         A problem parametrized with $\kappa$ is said to be \emph{fixed-parameter tractable} (FPT) if there exists an algorithm for the problem running on an input $x$ in time $f(\kappa (x) \cdot |x|)$, where $f$ is a computable function and $c > 0$ is a constant.
     \end{definition}
-    \begin{theorem}
-        When $r, K, \Delta$ are part of the input, the \textsc{Max-Min Diverse String Set} problem on a $\Sigma$-DAG admits an FPT algorithm.
-    \end{theorem}
-    \begin{theorem}
-        When $r, K, \Delta$ are part of the input, the \textsc{Max-Sum Diverse String Set} problem on a $\Sigma$-graphs for $r$-strings admits an FPT algorithm.
-    \end{theorem}
+    \begin{block}{Proposed FPT Algorithm}
+        We use the \textit{color-coding} technique with dynamic programming to solve these problems efficiently. Assign a random color to the edges of the $\Sigma$-DAG $G$, creating a colored graph called $C$-DAG.
+    \end{block}
+    % \begin{theorem}
+    %     When $r, K, \Delta$ are part of the input, the \textsc{Max-Min Diverse String Set} problem on a $\Sigma$-DAG admits an FPT algorithm.
+    % \end{theorem}
+    % \begin{theorem}
+    %     When $r, K, \Delta$ are part of the input, the \textsc{Max-Sum Diverse String Set} problem on a $\Sigma$-graphs for $r$-strings admits an FPT algorithm.
+    % \end{theorem}
 
+\end{frame}
+
+\begin{frame}
+    \frametitle{Computation of Reduced $C$-DAG}
+    \begin{figure}[t]
+        \abovecaptionskip=-0.0\baselineskip
+        %\belowcaptionskip=-0.5\baselineskip
+        \centering
+        \vspace{-0.5\baselineskip}
+        \includegraphics[width=0.9\textwidth,angle=0]{./figfptalgo}
+        \caption{Computation of reduced $C$-DAG $H$ from an input $\Sigma$-DAG $G$ over alphabet $\Sigma = \{A, B, C, D\}$ , which shows $G$  (left), a random coloring $c$ on $C = \{a,b\}$, a colored $C$-DAG $c(G)$ (middle), and a reduced $C$-DAG $H$ in the form of trie $T$ (right)}\label{fig:fptalgo}
+      \end{figure}
+
+      \begin{block}{}
+        An analogous FPT algorithm can be designed for the \textsc{Max-Sum Diverse String Set} problem with a small modification in the research phase, that, in this case, is  $O(\Delta K^2 M^K)$
+      \end{block}
+
+\end{frame}
+
+\begin{frame}{Complexity Results for Diverse String Problems}
+    \begin{block}{Negative Results}
+        \begin{itemize}
+            \item NP-hard for unbounded $K$ (\textsc{Max-Min}, \textsc{Max-Sum}) in $\Sigma$-graphs for $r$-strings, $r \ge 3$.
+            \item W[1]-hard parameterized with $K$ for $\textsc{Max-Min}$ and $\textsc{Max-Sum}$ in $\Sigma$-DAGs.
+        \end{itemize}
+    \end{block}
+
+    \begin{block}{Reduction to Diverse LCSs}
+        \textsc{Max-Min} and \textsc{Max-Sum} problems are FPT-reducible to \textsc{Diverse LCSs} for $m=2$ strings.
+    \end{block}
+
+    \begin{block}{Corollaries}
+        NP-hard and W[1]-hard results extend to \textsc{Diverse LCSs} for two $r$-strings.
+    \end{block}
 \end{frame}
 
 \section{Conclusions}
 \begin{frame}
-    \frametitle{Conclusions}
+    \frametitle{Conclusion}
+
     \begin{itemize}
-        \item When $K$ is bounded, both \textsc{Max-Min} and \textsc{Max-Sum} of both \textsc{Diverse String Set} and \textsc{Diverse LCSs} are solvable in polynomial time using dynamic programming.
-        \item When $K$ is part of the input, the \textsc{Max-Sum} version of the problems admits a PTAS by local search showing that the Hamming distance is a semi-metric of negative type.
+        \item \textbf{Polynomial-Time Solutions}: When \( K \) is bounded, both the \textsc{Max-Sum} and \textsc{Max-Min} versions of \textsc{Diverse String Set} and \textsc{Diverse LCSs} can be solved in polynomial time using dynamic programming (DP).
+        \item \textbf{PTAS for Input-Based \( K \)}: For input-dependent \( K \), the \textsc{Max-Sum} versions of both \textsc{Diverse String Set} and \textsc{Diverse LCSs} admit a PTAS using local search due to the Hamming distance being a metric of negative type.
+        \item \textbf{Fixed-Parameter Tractability (FPT)}: Both versions are FPT when parameterized by \( K \) and \( r \), combining the color coding technique and DP.
+        \item \textbf{NP-Hardness for Constant \( r \ge 3 \)}: When \( K \) is part of the input, both the \textsc{Max-Sum} and \textsc{Max-Min} versions are NP-hard for any constant \( r \ge 3 \).
+        \item \textbf{W[1]-Hard for Parameterized \( K \)}: Parameterized by \( K \), both versions are W[1]-hard.
     \end{itemize}
+
 \end{frame}
+
 
 
 % \section{Hardness Results}
