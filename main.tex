@@ -38,15 +38,15 @@
 \section{Introduction to the problems}
 \subsection{Diverse Strings Problems}
 \begin{frame}{Longest Common Subsequence (LCS)}
-\begin{definition}
-    Given a set of $m$ strings $S = \{ S_1, S_2, \ldots, S_m \}$, a \textbf{common subsequence} (\emph{CS}) is a sequence that appears in all $m$ strings. A \textbf{longest common subsequence} \emph{LCS} is a common subsequence of maximum length. We denote the set of all LCSs of $S$ as $LCS(S)$.
-\end{definition}
-\begin{alertblock}{Goal}
-    The goal is to find a diverse set of solutions to the LCS problem under the Hamming distance.
-\end{alertblock}
-\begin{definition}
-    Given two strings $X, Y \in \Sigma^r$, the \textbf{Hamming distance} between $X$ and $Y$, denoted with $d_H(X,Y)$, is the number of positions at which the corresponding symbols differ.
-\end{definition}
+    \begin{definition}
+        Given a set of $m$ strings $S = \{ S_1, S_2, \ldots, S_m \}$, a \textbf{common subsequence} (\emph{CS}) is a sequence that appears in all $m$ strings. A \textbf{longest common subsequence} \emph{LCS} is a common subsequence of maximum length. We denote the set of all LCSs of $S$ as $LCS(S)$.
+    \end{definition}
+    \begin{alertblock}{Goal}
+        The goal is to find a diverse set of solutions to the LCS problem under the Hamming distance.
+    \end{alertblock}
+    \begin{definition}
+        Given two strings $X, Y \in \Sigma^r$, the \textbf{Hamming distance} between $X$ and $Y$, denoted with $d_H(X,Y)$, is the number of positions at which the corresponding symbols differ.
+    \end{definition}
 \end{frame}
 
 % The LCS problem can be solved in polynomial time for constant $m \geq 2$ using dynamic    programming requiring $O(n^m)$ time. Where $n$ is the maximum length of the $m$ strings.
@@ -64,11 +64,11 @@
         \begin{tikzpicture}
             \node [draw, inner sep=10pt] {
                 \begin{tabular}{>{\centering}p{10cm}}
-                    $\epsilon$, $A$, $B$, $C$, $D$, $E$,\\
-                    $AA$, $AB$, $AC$, $AD$, $AE$, $BA$, \ldots, $CD$, $CE$, $DD$, $EE$,\\
-                    $ABA$, $ABB$, $ABC$, $ABD$, \ldots, $CEE$,\\
-                    $ABAD$, $ABAE$, $ABBD$, \ldots, $BCEE$,\\
-                    $\underline{ABADD}$, $\underline{ABAAE}$, $\underline{ABBDD}$,\\
+                    $\epsilon$, $A$, $B$, $C$, $D$, $E$,                                \\
+                    $AA$, $AB$, $AC$, $AD$, $AE$, $BA$, \ldots, $CD$, $CE$, $DD$, $EE$, \\
+                    $ABA$, $ABB$, $ABC$, $ABD$, \ldots, $CEE$,                          \\
+                    $ABAD$, $ABAE$, $ABBD$, \ldots, $BCEE$,                             \\
+                    $\underline{ABADD}$, $\underline{ABAAE}$, $\underline{ABBDD}$,      \\
                     $\underline{ABBEE}$, $\underline{ABCDD}$, $\underline{ABCEE}$
                 \end{tabular}
             };
@@ -84,8 +84,8 @@
 
     More formally, let's consider the following two diversity measures for a multiset $\mathcal{X} = \{X_1, X_2, \ldots, X_K\} \subseteq \Sigma^r$ of solutions, allowing repetitions:
     \begin{align}
-        D_{d_H}^{\text{sum}} (\mathcal{X}) &= \sum_{1 \leq i < j \leq K} d_H(X_i, X_j) & \text{\textsc{Max-Sum Diversity}} \\
-        D_{d_H}^{\text{min}} (\mathcal{X}) &= \min_{i < j} d_H(X_i, X_j) & \text{\textsc{Max-Min Diversity}}
+        D_{d_H}^{\text{sum}} (\mathcal{X}) & = \sum_{1 \leq i < j \leq K} d_H(X_i, X_j) & \text{\textsc{Max-Sum Diversity}} \\
+        D_{d_H}^{\text{min}} (\mathcal{X}) & = \min_{i < j} d_H(X_i, X_j)               & \text{\textsc{Max-Min Diversity}}
     \end{align}
 
     \begin{block}{Notation}
@@ -115,10 +115,10 @@
         \begin{itemize}
             \item \textbf{Alphabet ($\Sigma$)}: Set of symbols.
             \item \textbf{String Set (Language)}: \( L = \{ X_1, X_2, \dots, X_n \} \subseteq \Sigma^* \), with:
-            \begin{itemize}
-                \item \textbf{Total Length}: \( ||L|| = \sum_{X \in L} |X| \)
-                \item \textbf{Max Length}: \( \text{maxLen}(L) = \max_{X \in L} |X| \)
-            \end{itemize}
+                  \begin{itemize}
+                      \item \textbf{Total Length}: \( ||L|| = \sum_{X \in L} |X| \)
+                      \item \textbf{Max Length}: \( \text{maxLen}(L) = \max_{X \in L} |X| \)
+                  \end{itemize}
             \item \textbf{r-String}: Any string \( X \) where \( |X| = r \)
         \end{itemize}
     \end{block}
@@ -199,11 +199,11 @@
     %       \end{itemize}
     % \end{alertblock}
     \begin{block}{Dynamic Programming Approach}
-            \textbf{Pattern of Path Tuple:} For each \( d \leq r \) and \( K \)-tuple of length-\( d \) paths \( P = (P_1, \dots, P_K) \),
-            define pattern \( \text{Pattern}(P) = (\mathbf{w}, \mathbf{Z}) \), where:
-            \begin{itemize}
-                \item \( \mathbf{w} = (w_1, \ldots, w_K) \): \( K \)-tuple of vertices representing endpoints of \( P_i \) paths.
-                \item \( \mathbf{Z} = (Z_{i,j}) \): Upper triangular matrix of Hamming distances, where \( Z_{i,j} = \min \{\Delta, d_H(\text{str}(P_i), \text{str}(P_j))\} \).
+        \textbf{Pattern of Path Tuple:} For each \( d \leq r \) and \( K \)-tuple of length-\( d \) paths \( P = (P_1, \dots, P_K) \),
+        define pattern \( \text{Pattern}(P) = (\mathbf{w}, \mathbf{Z}) \), where:
+        \begin{itemize}
+            \item \( \mathbf{w} = (w_1, \ldots, w_K) \): \( K \)-tuple of vertices representing endpoints of \( P_i \) paths.
+            \item \( \mathbf{Z} = (Z_{i,j}) \): Upper triangular matrix of Hamming distances, where \( Z_{i,j} = \min \{\Delta, d_H(\text{str}(P_i), \text{str}(P_j))\} \).
         \end{itemize}
     \end{block}
     \begin{block}{DP Table of Weights}
@@ -232,32 +232,32 @@
     \begin{algorithm}[H] \label{alg:dp}
         \footnotesize{\caption{}}
         \footnotesize{\begin{algorithmic}[1]
-            \State Set \texttt{Weights}($\mathbf{s}, Z$) $=0$ for all $Z \in (\Delta \cup \{0\})^{K \times K}$ and \texttt{Weights}($\mathbf{s}, \mathbf{0}$) $\gets 1$
-            \For{$d \gets 1, \dots , r$}
+                \State Set \texttt{Weights}($\mathbf{s}, Z$) $=0$ for all $Z \in (\Delta \cup \{0\})^{K \times K}$ and \texttt{Weights}($\mathbf{s}, \mathbf{0}$) $\gets 1$
+                \For{$d \gets 1, \dots , r$}
                 \For{$\mathbf{v} \gets (v_1, \dots v_K) \in (V_d)^K $}
-                    \For{$(v_1, c_1, w_1) \in E^+(v_1), \dots, (v_K, c_K, w_K) \in E^+(v_K)$}
-                        \State Set $\mathbf{w} = (w_1, \dots, w_K)$
-                        \For{$U \in (\Delta \cup \{0\})^{K \times K}$ such that \texttt{Weights}($\mathbf{v}, U$) = 1}
-                            \State Set $Z = (Z_{i,j})_{i<j}$ with $Z_{i,j} \gets \min \{\Delta, U_{i,j} + \mathbbm{1}\{c_i \neq c_j\}\} \quad \forall ~ i, j \in K$
-                            \State Set \texttt{Weights}($\mathbf{w}, Z$) $\gets 1$ \Comment{Update}
-                        \EndFor
-                    \EndFor
+                \For{$(v_1, c_1, w_1) \in E^+(v_1), \dots, (v_K, c_K, w_K) \in E^+(v_K)$}
+                \State Set $\mathbf{w} = (w_1, \dots, w_K)$
+                \For{$U \in (\Delta \cup \{0\})^{K \times K}$ such that \texttt{Weights}($\mathbf{v}, U$) = 1}
+                \State Set $Z = (Z_{i,j})_{i<j}$ with $Z_{i,j} \gets \min \{\Delta, U_{i,j} + \mathbbm{1}\{c_i \neq c_j\}\} \quad \forall ~ i, j \in K$
+                \State Set \texttt{Weights}($\mathbf{w}, Z$) $\gets 1$ \Comment{Update}
                 \EndFor
-            \EndFor
-            \State Answer \texttt{Yes} if \texttt{Weights}($\mathbf{t}, Z$) = 1 and $D_{d_H}^{\text{min}}(Z) \geq \Delta$ for some $Z$, else \texttt{No}
-        \end{algorithmic}}
+                \EndFor
+                \EndFor
+                \EndFor
+                \State Answer \texttt{Yes} if \texttt{Weights}($\mathbf{t}, Z$) = 1 and $D_{d_H}^{\text{min}}(Z) \geq \Delta$ for some $Z$, else \texttt{No}
+            \end{algorithmic}}
     \end{algorithm}
     \small{For any $K \geq 1$ and $\Delta \geq 0$, it solves the \textsc{Max-Min Diverse String Set} problem in $O(\Delta^{K^2} K^2 M^K (\log |V| + \log \Delta))$ time and space when an input string set $L$ is represented by a $\Sigma$-DAG $G$ with size($G$) = $M$}
 \end{frame}
 
 \begin{frame}
     \frametitle{Example Run of the Algorithm}
-        \begin{figure}[h]
-            \centering
-            \includegraphics[width=1\textwidth]{6Kc2XEQ.png}
-            \caption{(a) An input $\Sigma$-DAG $G_1$ over $\Sigma = \{A, B, C, D, E\}$ for the set of all longest common subsequences of two strings $X_1 = \text{ABABCDDEE}$ and $Y_1 = \text{ABCBAEEDD}$ and (b) an example run of Algorithm 1 based on dynamic programming with $K = 3$ on an input $G_1$}
-            \label{fig:example}
-        \end{figure}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=1\textwidth]{6Kc2XEQ.png}
+        \caption{(a) An input $\Sigma$-DAG $G_1$ over $\Sigma = \{A, B, C, D, E\}$ for the set of all longest common subsequences of two strings $X_1 = \text{ABABCDDEE}$ and $Y_1 = \text{ABCBAEEDD}$ and (b) an example run of Algorithm 1 based on dynamic programming with $K = 3$ on an input $G_1$}
+        \label{fig:example}
+    \end{figure}
 
 
 
@@ -269,13 +269,13 @@
 \begin{frame}
     \frametitle{Algorithm for \textsc{Max-Sum Diverse String Set} problem}
     \begin{block}{Modify the Max-Sum Diverse String Set problem}
-            Instead of the entire \( K \times K \) weight matrix \( Z \), only the sum \( z = \sum_{i<j} d_H(\text{str}(P_i), \text{str}(P_j)) \) is needed for computing Max-Sum diversity.
+        Instead of the entire \( K \times K \) weight matrix \( Z \), only the sum \( z = \sum_{i<j} d_H(\text{str}(P_i), \text{str}(P_j)) \) is needed for computing Max-Sum diversity.
     \end{block}
 
     \begin{block}{New DP Table Weights}
         For \( \mathbf{w} = (w_1, \dots, w_K) \) of depth \( 0 \leq d  \leq r\) and integer \( 0 \leq z \leq rK \), define:
         \[
-        \texttt{Weights}(\mathbf{w}, z) = 1
+            \texttt{Weights}(\mathbf{w}, z) = 1
         \]
         if and only if there exists a \( K \)-tuple of length-\( d \) prefix paths \( (P_1, \dots, P_K) \) from \( s \) to \( w_1, \dots, w_K \) with sum of pairwise Hamming distances \( z \).
     \end{block}
@@ -287,20 +287,20 @@
     \begin{algorithm}[H] \label{alg:dp2}
         \footnotesize{\caption{}}
         \footnotesize{\begin{algorithmic}[1]
-            \State Set \texttt{Weights}($\mathbf{s}, Z$) $=0$ for all $Z \in (\Delta \cup \{0\})^{K \times K}$ and \texttt{Weights}($\mathbf{s}, \mathbf{0}$) $\gets 1$
-            \For{$d \gets 1, \dots , r$}
+                \State Set \texttt{Weights}($\mathbf{s}, Z$) $=0$ for all $Z \in (\Delta \cup \{0\})^{K \times K}$ and \texttt{Weights}($\mathbf{s}, \mathbf{0}$) $\gets 1$
+                \For{$d \gets 1, \dots , r$}
                 \For{$\mathbf{v} \gets (v_1, \dots v_K) \in (V_d)^K $}
-                    \For{$(v_1, c_1, w_1) \in E^+(v_1), \dots, (v_K, c_K, w_K) \in E^+(v_K)$}
-                        \State Set $\mathbf{w} = (w_1, \dots, w_K)$
-                        \For{$u \gets (0, \dots, rK)$ such that \texttt{Weights}($\mathbf{v}, U$) = 1}
-                            \State Set $Z = (Z_{i,j})_{i<j}$ with $Z_{i,j} \gets \min \{\Delta, u + \sum_{i<j}\mathbbm{1}\{c_i \neq c_j\}\}$
-                            \State Set \texttt{Weights}($\mathbf{w}, Z$) $\gets 1$ \Comment{Update}
-                        \EndFor
-                    \EndFor
+                \For{$(v_1, c_1, w_1) \in E^+(v_1), \dots, (v_K, c_K, w_K) \in E^+(v_K)$}
+                \State Set $\mathbf{w} = (w_1, \dots, w_K)$
+                \For{$u \gets (0, \dots, rK)$ such that \texttt{Weights}($\mathbf{v}, U$) = 1}
+                \State Set $Z = (Z_{i,j})_{i<j}$ with $Z_{i,j} \gets \min \{\Delta, u + \sum_{i<j}\mathbbm{1}\{c_i \neq c_j\}\}$
+                \State Set \texttt{Weights}($\mathbf{w}, Z$) $\gets 1$ \Comment{Update}
                 \EndFor
-            \EndFor
-            \State Answer \texttt{Yes} if \texttt{Weights}($\mathbf{t}, Z$) = 1 and $D_{d_H}^{\text{min}}(Z) \geq \Delta$ for some $Z$, else \texttt{No}
-        \end{algorithmic}}
+                \EndFor
+                \EndFor
+                \EndFor
+                \State Answer \texttt{Yes} if \texttt{Weights}($\mathbf{t}, Z$) = 1 and $D_{d_H}^{\text{min}}(Z) \geq \Delta$ for some $Z$, else \texttt{No}
+            \end{algorithmic}}
     \end{algorithm}
     \small{For any $K \geq 1$, \ref{alg:dp2} solves the \textsc{Max-Sum Diverse String Set} under Hamming Distance in $O(\Delta K^2 M^K (\log |V| + \log \Delta))$ time and space, where $M$ is the size of the input $\Sigma$-DAG $G$}
 \end{frame}
@@ -320,15 +320,15 @@
     \begin{algorithm}[H] \label{alg:LocalSearch}
         \footnotesize{\caption{\texttt{LocalSearch}($\mathcal{L}, K, d$)}}
         \footnotesize{\begin{algorithmic}[1]
-            \State $\mathcal{X} \gets$ arbitrary set of $K$ solutions in $\mathcal{L}$
-            \For{$i \gets 1, \dots, \lceil \frac{K(K-1)}{K+1} \log \frac{(K+2)(K-1)^2}{4} \rceil$}
+                \State $\mathcal{X} \gets$ arbitrary set of $K$ solutions in $\mathcal{L}$
+                \For{$i \gets 1, \dots, \lceil \frac{K(K-1)}{K+1} \log \frac{(K+2)(K-1)^2}{4} \rceil$}
                 \For{$X \in \mathcal{X}$ s.t $\mathcal{L} \setminus \{X\} \neq \emptyset$}
-                    \State $Y \gets \text{argmax}_{Y \in \mathcal{L} \setminus \{X\}} \sum_{X' \in \mathcal{X} \setminus \{X\}} d(X', Y)$
-                    \State $\mathcal{X} \gets \mathcal{X} \setminus \{X\} \cup \{Y\}$
+                \State $Y \gets \text{argmax}_{Y \in \mathcal{L} \setminus \{X\}} \sum_{X' \in \mathcal{X} \setminus \{X\}} d(X', Y)$
+                \State $\mathcal{X} \gets \mathcal{X} \setminus \{X\} \cup \{Y\}$
                 \EndFor
-            \EndFor
-            \State \textbf{return} $\mathcal{X}$
-        \end{algorithmic}}
+                \EndFor
+                \State \textbf{return} $\mathcal{X}$
+            \end{algorithmic}}
     \end{algorithm}
 
     \begin{theorem}
@@ -340,21 +340,21 @@
     \frametitle{\textsc{Max-Sum Farthest} r-\textsc{String} problem}
     How do we solve efficiently the subproblem at line 4 of the \textsc{LocalSearch} algorithm?
     \[
-    Y \gets \text{argmax}_{Y \in \mathcal{L} \setminus \{X\}} \sum_{X' \in \mathcal{X} \setminus \{X\}} d(X', Y)
+        Y \gets \text{argmax}_{Y \in \mathcal{L} \setminus \{X\}} \sum_{X' \in \mathcal{X} \setminus \{X\}} d(X', Y)
     \]
     The following algorithm can be modified to compute such $Y$ by reordering the parent pair $(v, y)$ of each $(w, z)$ and then tracking back
     % start an algorithm environment
     \begin{algorithm}[H] \label{alg:ExactMaxSumFarthest}
         \small{\caption{Decisional \textsc{Max-Sum Farthest} r-\textsc{String}}}
         \footnotesize{\begin{algorithmic}[1]
-            \State Set $Weights(s, z) := 0$ for all $z \in [\Delta]_+$, and $Weights(s, 0) := 1$\;
-            \For{$d := 1, \dots, r$}
+                \State Set $Weights(s, z) := 0$ for all $z \in [\Delta]_+$, and $Weights(s, 0) := 1$\;
+                \For{$d := 1, \dots, r$}
                 \For{$0\le u\le \Delta$ such that $Weights(v, u) := 1$}
-                    \State Set $Weights(w, z) := 1$ for $z := u + \sum_{i \in [K]} \mathbbm{1}\{ c \not= X_i[d] \}$ \Comment{Update}
+                \State Set $Weights(w, z) := 1$ for $z := u + \sum_{i \in [K]} \mathbbm{1}\{ c \not= X_i[d] \}$ \Comment{Update}
                 \EndFor
-            \EndFor
-            \State Answer YES if $Weights(t, \Delta) = 1$, and NO otherwise \Comment{Decide}
-        \end{algorithmic}}
+                \EndFor
+                \State Answer YES if $Weights(t, \Delta) = 1$, and NO otherwise \Comment{Decide}
+            \end{algorithmic}}
     \end{algorithm}
 \end{frame}
 
@@ -382,7 +382,7 @@
 \begin{frame}
     \frametitle{FPT Algorithms for \textsc{Max-Min} and \textsc{Max-Sum Diverse String Set} problems}
     \begin{definition}[Fixed-Parameter Tractable (FPT) Algorithm]
-        A problem parametrized with $\kappa$ is said to be \emph{fixed-parameter tractable} (FPT) if there exists an algorithm for the problem running on an input $x$ in time $f(\kappa (x) \cdot |x|)$, where $f$ is a computable function and $c > 0$ is a constant.
+        A problem parametrized with $\kappa$ is said to be \emph{fixed-parameter tractable} (FPT) if there exists an algorithm for the problem running on an input $x$ in time $f(\kappa (x) \cdot |x|^c)$, where $f$ is a computable function and $c > 0$ is a constant.
     \end{definition}
     \begin{block}{Proposed FPT Algorithm}
         We use the \textit{color-coding} technique with dynamic programming to solve these problems efficiently. Assign a random color to the edges of the $\Sigma$-DAG $G$, creating a colored graph called $C$-DAG.
@@ -405,13 +405,15 @@
         \vspace{-0.5\baselineskip}
         \includegraphics[width=0.9\textwidth,angle=0]{./figfptalgo}
         \caption{Computation of reduced $C$-DAG $H$ from an input $\Sigma$-DAG $G$ over alphabet $\Sigma = \{A, B, C, D\}$ , which shows $G$  (left), a random coloring $c$ on $C = \{a,b\}$, a colored $C$-DAG $c(G)$ (middle), and a reduced $C$-DAG $H$ in the form of trie $T$ (right)}\label{fig:fptalgo}
-      \end{figure}
+    \end{figure}
 
-      \begin{block}{}
+    \begin{block}{}
         An analogous FPT algorithm can be designed for the \textsc{Max-Sum Diverse String Set} problem with a small modification in the research phase, that, in this case, is  $O(\Delta K^2 M^K)$
-      \end{block}
+    \end{block}
 
 \end{frame}
+
+\section{Complexity Results for Diverse String Problems}
 
 \begin{frame}{Complexity Results for Diverse String Problems}
     \begin{block}{Negative Results}
@@ -430,7 +432,7 @@
     \end{block}
 \end{frame}
 
-\section{Conclusions}
+\section*{Conclusions}
 \begin{frame}
     \frametitle{Conclusion}
 
