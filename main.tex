@@ -11,22 +11,41 @@
 \usepackage{graphicx}
 
 % Theme choice:
-\usetheme{Boadilla}
+\usetheme{Madrid}
 
 % Title page details:
-\title{Finding Diverse Strings and Longest Common Subsequences in a Graph}
+\title{Finding Diverse Strings and Longest Common Sequences in a Graph}
+\subtitle{Seminar for the course of Bioinformatics}
 \author{Luca Lombardo}
-\date{Seminar for the course of Bioinformatics}
-% \logo{\large \LaTeX{}}
-
-
+\date{}
 
 \begin{document}
 
-% Title page frame
-\begin{frame}
+\begin{frame}[plain]
     \titlepage
+    \begin{center}
+        \footnotesize{\textit{Based on the work of: Yuto Shida, Giulia Punzi, Yasuaki Kobayashi, Takeaki Uno, Hiroki Arimura}}
+    \end{center}
 \end{frame}
+% \logo{\large \LaTeX{}}
+% \setbeamertemplate{footline}{%
+%     \begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1ex,rightskip=0cm]{footline}%
+%         \hspace*{1ex}%
+%         \usebeamerfont{author in head/foot}\insertshortauthor\hfill%
+%         \usebeamerfont{title in head/foot}\insertshorttitle%
+%         \hspace*{1ex}%
+%     \end{beamercolorbox}%
+% }
+
+
+
+
+% \begin{document}
+
+% % Title page frame
+% \begin{frame}
+%     \titlepage
+% \end{frame}
 
 
 % Outline frame
@@ -49,36 +68,27 @@
     \end{definition}
 \end{frame}
 
-% The LCS problem can be solved in polynomial time for constant $m \geq 2$ using dynamic    programming requiring $O(n^m)$ time. Where $n$ is the maximum length of the $m$ strings.
+% \begin{frame}
+%     \frametitle{A simple example}
+%     % Add here the example of the paper
+%     \begin{table}[h!]
+%         \centering
+%         \caption{Longest common subsequences of two input strings $X=ABABCDDEE$ and $Y=ABCBAEEDD.$ over $\Sigma = \{A, B, C, D, E\}$}
+%         \begin{tikzpicture}
+%             \node [draw, inner sep=10pt] {
+%                 \begin{tabular}{>{\centering}p{10cm}}
+%                     $\epsilon$, $A$, $B$, $C$, $D$, $E$,                                \\
+%                     $AA$, $AB$, $AC$, $AD$, $AE$, $BA$, \ldots, $CD$, $CE$, $DD$, $EE$, \\
+%                     $ABA$, $ABB$, $ABC$, $ABD$, \ldots, $CEE$,                          \\
+%                     $ABAD$, $ABAE$, $ABBD$, \ldots, $BCEE$,                             \\
+%                     $\underline{ABADD}$, $\underline{ABAAE}$, $\underline{ABBDD}$,      \\
+%                     $\underline{ABBEE}$, $\underline{ABCDD}$, $\underline{ABCEE}$
+%                 \end{tabular}
+%             };
+%         \end{tikzpicture}
+%     \end{table}
 
-% \begin{alertblock}{}
-%     When $m$ is unrestricted, the LCS problem is NP-complete.
-% \end{alertblock}
-
-\begin{frame}
-    \frametitle{A simple example}
-    % Add here the example of the paper
-    \begin{table}[h!]
-        \centering
-        \caption{Longest common subsequences of two input strings $X=ABABCDDEE$ and $Y=ABCBAEEDD.$ over $\Sigma = \{A, B, C, D, E\}$}
-        \begin{tikzpicture}
-            \node [draw, inner sep=10pt] {
-                \begin{tabular}{>{\centering}p{10cm}}
-                    $\epsilon$, $A$, $B$, $C$, $D$, $E$,                                \\
-                    $AA$, $AB$, $AC$, $AD$, $AE$, $BA$, \ldots, $CD$, $CE$, $DD$, $EE$, \\
-                    $ABA$, $ABB$, $ABC$, $ABD$, \ldots, $CEE$,                          \\
-                    $ABAD$, $ABAE$, $ABBD$, \ldots, $BCEE$,                             \\
-                    $\underline{ABADD}$, $\underline{ABAAE}$, $\underline{ABBDD}$,      \\
-                    $\underline{ABBEE}$, $\underline{ABCDD}$, $\underline{ABCEE}$
-                \end{tabular}
-            };
-        \end{tikzpicture}
-    \end{table}
-
-\end{frame}
-
-
-
+% \end{frame}
 
 \begin{frame}{Efficient methods for finding a diverse set of solutions}
 
@@ -337,12 +347,12 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{\textsc{Max-Sum Farthest} r-\textsc{String} problem}
-    How do we solve efficiently the subproblem at line 4 of the \textsc{LocalSearch} algorithm?
+    \frametitle{\textsc{Max Sum Farthest} r-\textsc{String} problem}
+    How do we solve efficiently the following problem?
     \[
         Y \gets \text{argmax}_{Y \in \mathcal{L} \setminus \{X\}} \sum_{X' \in \mathcal{X} \setminus \{X\}} d(X', Y)
     \]
-    The following algorithm can be modified to compute such $Y$ by reordering the parent pair $(v, y)$ of each $(w, z)$ and then tracking back
+    % The following algorithm can be modified to compute such $Y$ by reordering the parent pair $(v, y)$ of each $(w, z)$ and then tracking back
     % start an algorithm environment
     \begin{algorithm}[H] \label{alg:ExactMaxSumFarthest}
         \small{\caption{Decisional \textsc{Max-Sum Farthest} r-\textsc{String}}}
@@ -356,21 +366,24 @@
                 \State Answer YES if $Weights(t, \Delta) = 1$, and NO otherwise \Comment{Decide}
             \end{algorithmic}}
     \end{algorithm}
-\end{frame}
-
-\begin{frame}
-    \frametitle{\textsc{Max-Sum Farthest} r-\textsc{String} problem}
-
-    \begin{lemma}[Max-Sum Farthest $r$-String]
-        For any $K \geq 1$ and $\Delta \geq 0$, \textsc{Algorithm 3} computes the farthest $r$-string $Y \in L(G)$ that maximizes $D_{d_H}^{\text{sum}}(Y \cup \mathcal{X})$ over all $r$-strings in $L(G)$ in $O(K \Delta M)$ time and space, where $M$ is the size of the input $\Sigma$-DAG $G$.
-    \end{lemma}
-
     \begin{theorem}[Polynomial Time Approximation Scheme for unbounded $K$]
-        When $K$ i part of an input, \textsc{Max-Sum Diverse String Set} problem on a $\Sigma$-DAG admits a PTAS
+        When $K$ is part of an input, \textsc{Max-Sum Diverse String Set} problem on a $\Sigma$-DAG admits a PTAS
     \end{theorem}
-    The corresponding result for the \textsc{Max-Sum Diverse LCSs} follows immediately.
-
 \end{frame}
+
+% \begin{frame}
+%     \frametitle{\textsc{Max-Sum Farthest} r-\textsc{String} problem}
+
+%     \begin{lemma}[Max-Sum Farthest $r$-String]
+%         For any $K \geq 1$ and $\Delta \geq 0$, \textsc{Algorithm 3} computes the farthest $r$-string $Y \in L(G)$ that maximizes $D_{d_H}^{\text{sum}}(Y \cup \mathcal{X})$ over all $r$-strings in $L(G)$ in $O(K \Delta M)$ time and space, where $M$ is the size of the input $\Sigma$-DAG $G$.
+%     \end{lemma}
+
+%     \begin{theorem}[Polynomial Time Approximation Scheme for unbounded $K$]
+%         When $K$ i part of an input, \textsc{Max-Sum Diverse String Set} problem on a $\Sigma$-DAG admits a PTAS
+%     \end{theorem}
+%     The corresponding result for the \textsc{Max-Sum Diverse LCSs} follows immediately.
+
+% \end{frame}
 
 \section{FPT Algorithms for Bounded Number and Length of Diverse Strings}
 \begin{frame}
@@ -385,7 +398,7 @@
         A problem parametrized with $\kappa$ is said to be \emph{fixed-parameter tractable} (FPT) if there exists an algorithm for the problem running on an input $x$ in time $f(\kappa (x) \cdot |x|^c)$, where $f$ is a computable function and $c > 0$ is a constant.
     \end{definition}
     \begin{block}{Proposed FPT Algorithm}
-        We use the \textit{color-coding} technique with dynamic programming to solve these problems efficiently. Assign a random color to the edges of the $\Sigma$-DAG $G$, creating a colored graph called $C$-DAG.
+        \textit{Color-coding} technique with dynamic programming to solve these problems efficiently. Assign a random color to the edges of the $\Sigma$-DAG $G$, creating a colored graph called $C$-DAG, then
     \end{block}
     % \begin{theorem}
     %     When $r, K, \Delta$ are part of the input, the \textsc{Max-Min Diverse String Set} problem on a $\Sigma$-DAG admits an FPT algorithm.
