@@ -260,19 +260,15 @@
     \small{For any $K \geq 1$ and $\Delta \geq 0$, it solves the \textsc{Max-Min Diverse String Set} problem in $O(\Delta^{K^2} K^2 M^K (\log |V| + \log \Delta))$ time and space when an input string set $L$ is represented by a $\Sigma$-DAG $G$ with size($G$) = $M$}
 \end{frame}
 
-\begin{frame}
-    \frametitle{Example Run of the Algorithm}
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=1\textwidth]{6Kc2XEQ.png}
-        \caption{(a) An input $\Sigma$-DAG $G_1$ over $\Sigma = \{A, B, C, D, E\}$ for the set of all longest common subsequences of two strings $X_1 = \text{ABABCDDEE}$ and $Y_1 = \text{ABCBAEEDD}$ and (b) an example run of Algorithm 1 based on dynamic programming with $K = 3$ on an input $G_1$}
-        \label{fig:example}
-    \end{figure}
-
-
-
-
-\end{frame}
+% \begin{frame}
+%     \frametitle{Example Run of the Algorithm}
+%     \begin{figure}[h]
+%         \centering
+%         \includegraphics[width=1\textwidth]{6Kc2XEQ.png}
+%         \caption{(a) An input $\Sigma$-DAG $G_1$ over $\Sigma = \{A, B, C, D, E\}$ for the set of all longest common subsequences of two strings $X_1 = \text{ABABCDDEE}$ and $Y_1 = \text{ABCBAEEDD}$ and (b) an example run of Algorithm 1 based on dynamic programming with $K = 3$ on an input $G_1$}
+%         \label{fig:example}
+%     \end{figure}
+% \end{frame}
 
 
 \subsection{\textsc{Max-Sum Diverse String Set} problem}
@@ -312,7 +308,7 @@
                 \State Answer \texttt{Yes} if \texttt{Weights}($\mathbf{t}, Z$) = 1 and $D_{d_H}^{\text{min}}(Z) \geq \Delta$ for some $Z$, else \texttt{No}
             \end{algorithmic}}
     \end{algorithm}
-    \small{For any $K \geq 1$, \ref{alg:dp2} solves the \textsc{Max-Sum Diverse String Set} under Hamming Distance in $O(\Delta K^2 M^K (\log |V| + \log \Delta))$ time and space, where $M$ is the size of the input $\Sigma$-DAG $G$}
+    \small{For any $K \geq 1$, it solves the \textsc{Max-Sum Diverse String Set} under Hamming Distance in $O(\Delta K^2 M^K (\log |V| + \log \Delta))$ time and space, where $M$ is the size of the input $\Sigma$-DAG $G$}
 \end{frame}
 
 \section{Approximation Algorithms for Unbounded Number of Diverse Strings}
@@ -398,8 +394,11 @@
         A problem parametrized with $\kappa$ is said to be \emph{fixed-parameter tractable} (FPT) if there exists an algorithm for the problem running on an input $x$ in time $f(\kappa (x) \cdot |x|^c)$, where $f$ is a computable function and $c > 0$ is a constant.
     \end{definition}
     \begin{block}{Proposed FPT Algorithm}
-        \textit{Color-coding} technique with dynamic programming to solve these problems efficiently. Assign a random color to the edges of the $\Sigma$-DAG $G$, creating a colored graph called $C$-DAG, then
+        \textit{Color-coding} technique with dynamic programming to solve these problems efficiently. Assign a random color to the edges of the $\Sigma$-DAG $G$, creating a colored graph called $C$-DAG, then reduce it to a trie $T$.
     \end{block}
+    \begin{theorem}
+        For any set $C$ of $k$ colors, there exists some $C$-DAG $H$ obtained by reducing $c(G)$ such that $L(H) = L(c(G))$ and $||H|| \le k^r$.
+    \end{theorem}
     % \begin{theorem}
     %     When $r, K, \Delta$ are part of the input, the \textsc{Max-Min Diverse String Set} problem on a $\Sigma$-DAG admits an FPT algorithm.
     % \end{theorem}
@@ -420,9 +419,14 @@
         \caption{Computation of reduced $C$-DAG $H$ from an input $\Sigma$-DAG $G$ over alphabet $\Sigma = \{A, B, C, D\}$ , which shows $G$  (left), a random coloring $c$ on $C = \{a,b\}$, a colored $C$-DAG $c(G)$ (middle), and a reduced $C$-DAG $H$ in the form of trie $T$ (right)}\label{fig:fptalgo}
     \end{figure}
 
-    \begin{block}{}
-        An analogous FPT algorithm can be designed for the \textsc{Max-Sum Diverse String Set} problem with a small modification in the research phase, that, in this case, is  $O(\Delta K^2 M^K)$
-    \end{block}
+    % \begin{theorem}{}
+    %     An analogous FPT algorithm can be designed for the \textsc{Max-Sum Diverse String Set} problem with a small modification in the research phase, that, in this case, is  $O(\Delta K^2 M^K)$
+    % \end{theorem}
+    \begin{theorem}{}
+        When $r$ and $K$ are parameters, the \textsc{Max-Min (Max-Sum) Diverse String Set}
+        on a $\Sigma$-DAG for $r$-strings is fixed-parameter tractable (FPT), where $size(G)$ is
+        an input.
+    \end{theorem}
 
 \end{frame}
 

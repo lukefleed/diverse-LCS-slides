@@ -1,8 +1,8 @@
-## Slide 2/24
+## Slide 2/22
 
 Fai una piccola overview sostanzialmente leggendo l'indice
 
-## Slide 3/24
+## Slide 3/22
 
 Il problema della LCS sappiamo che può essere risolto in tempo polinomiale in O(n^m) con la programmazione dinamica per un numero di stringhe $m \geq 2$, con $n$ lunghezza massima delle stringhe. Quando non ci sono restrizioni su $m$ sappiamo che il problema è NP-completo.
 
@@ -10,11 +10,7 @@ Quello a cui siamo interessati è trovare un diverse set of solution per la long
 
 Guardiamo ad esempio questo caso
 
-## Slide 4/24
-
-Leggi l'esempio
-
-## Slide 5/24
+## Slide 5/22
 
 Cerchiamo di dare un po' di formalismo al problema. Considereremo due misure di diversità per un insieme di soluzioni che ammette ripetizioni:
 
@@ -30,7 +26,7 @@ $$D_{d_H}^{\text{min}} (\mathcal{X}) = \min_{i < j} d_H(X_i, X_j) \quad \text{Ma
 
 Che è la distanza minima tra tutte le coppie di soluzioni.
 
-## Slide 6/24
+## Slide 6/22
 
 Ci concentreremo a risolvere due problemi
 
@@ -51,7 +47,7 @@ Consideriamo ora il secondo problema, dove $\tau$ può essere sia sum che min
 
 - Il secondo problema è il Diverse String Set, che chiede se esiste un insieme di $K$ stringhe in un $\Sigma$-DAG con una distanza di Hamming maggiore o uguale a $\Delta$.
 
-## Slide 7/24
+## Slide 7/22
 
 Vediamo un attimo cosa sono questi $\Sigma$-DAGs.
 
@@ -59,13 +55,13 @@ Partiamo dalle definizioni fondamentali. Un alfabeto $\Sigma$ è un insieme di s
 
 Un $\Sigma$-DAG è un grafo diretto $G = (V, E, s, t)$, dove i nodi $V$ sono collegati da archi etichettati $E = (v, c, w)$, con $c \in \Sigma$. Questo grafo ha una sorgente $s$ e un pozzo $t$, tali che esiste almeno un cammino da $s$ a ogni nodo. La dimensione del grafo, indicata con $\text{size}(G)$, è data dal numero di archi etichettati.
 
-## Slide 8/24
+## Slide 8/22
 
 Passando alla rappresentazione del linguaggio, ogni cammino nel $\Sigma$-DAG, che collega $s$ a $t$, rappresenta una stringa generata concatenando le etichette degli archi del cammino. In questo senso, un $\Sigma$-DAG può rappresentare $L(G)$, ovvero tutte le stringhe generate da $s$ a $t$. È interessante notare che un $\Sigma$-DAG è equivalente a un automa a stati finiti senza transizioni $\epsilon$.
 
 Una proprietà fondamentale è che, per qualsiasi insieme di stringhe $L$, esiste un $\Sigma$-DAG $G$ tale che il linguaggio $L(G)$ sia esattamente $L$, e la dimensione del grafo non superi $||L||$. Inoltre, il grafo può essere costruito in modo efficiente, con un costo computazionale di $O(||L|| \log |\Sigma|)$. Un'osservazione importante è che, se $L$ contiene solo stringhe di lunghezza fissata $r$, allora tutti i cammini da $s$ a un nodo intermedio nel grafo hanno la stessa lunghezza, al massimo $r$.
 
-## Slide 9/24
+## Slide 9/22
 
 Un importante risultato sui $\Sigma$-DAGs è la loro applicazione al calcolo della LCS, la _Longest Common Subsequence_, per un insieme di stringhe. Il lemma afferma che, dato un insieme $S = \{S_1, \dots, S_m\}$ di $m$ stringhe definite su un alfabeto $\Sigma$, è possibile costruire un $\Sigma$-DAG $G$ di dimensione polinomiale rispetto alla lunghezza massima delle stringhe in $S$ tale che rappresenti esattamente il linguaggio delle LCS di $S$ e può essere calcolato in tempo polinomiale.
 
@@ -73,11 +69,11 @@ La costruzione del $\Sigma$-DAG si basa su un grafo a griglia $N$ $m$-dimensiona
 
 Un risultato importante derivato dal lemma è che se un problema di \textsc{Max-Min} o \textsc{Max-Sum Diverse String Set} è risolvibile in un tempo $f(M, K, r, \Delta)$, allora lo stesso problema applicato alle LCS di stringhe può essere risolto in un tempo $O(|\Sigma| \cdot \ell^m + f(\ell^m, K, r, \Delta))$. Questo dimostra un legame diretto tra problemi di diversità delle stringhe e l'utilizzo dei $\Sigma$-DAGs per rappresentare efficientemente le LCS.
 
-## Slide 10/24
+## Slide 10/22
 
 Adesso andremo a vedere che sia la versione Max Min che Max Sum del problema Diverse Set possono essere risolti in tempo e spazio polinomiale utilizzando la programmazione dinamica. Queste complessità vedremo come sono proporzionali alle dimensioni del SIGMA-DAG in input e degli interi $K, r, \Delta$. Di conseguenza, dal lemma di prima, potremo concludere che anche i problemi di diversità delle LCS possono essere risolti in tempo polinomiale.
 
-## Slide 11-12/24
+## Slide 11-12/22
 
 Il problema \textsc{Max-Min Diverse String Set} mira a selezionare un insieme di stringhe che massimizza la diversità minima tra le coppie di stringhe, utilizzando la distanza di Hamming. Inizialmente, un approccio brute force sarebbe teoricamente possibile: enumerare tutte le combinazioni di $K$ cammini $(s,t)$ in un grafo $G$ e poi scegliere una soluzione $\Delta$-diversa. Tuttavia, questa strategia è impraticabile perché la complessità cresce esponenzialmente con il numero di archi di $G$.
 
@@ -85,7 +81,7 @@ La soluzione proposta si basa invece sulla programmazione dinamica. La chiave è
 
 L'algoritmo segue una logica iterativa: per ogni profondità $d$, esplora tutte le possibili transizioni dei cammini e aggiorna \texttt{Weights} considerando le matrici delle distanze tra le stringhe. Alla fine, verifica se esiste una configurazione compatibile con il requisito di diversità minima $\Delta$. Nonostante la complessità, il metodo è drasticamente più efficiente rispetto al brute force, rendendo possibile la risoluzione di casi pratici su grafi rappresentati in modo compatto come $\Sigma$-DAG. La dimensione massima di $WT$ è proporzionale a $|V|^K \cdot \Gamma$, dove $\Gamma = O(\Delta^{K^2}K^2)$ rappresenta il numero massimo di configurazioni della matrice $Z$. Per valori costanti di $K$, questo approccio è polinomiale rispetto alla dimensione del grafo $M$ e al parametro $\Delta$, garantendo un accesso rapido ai dati grazie a strutture come gli alberi bilanciati.
 
-## Slide 13/24
+## Slide 13/22
 
 L'esempio mostrato nell'immagine illustra l'applicazione dell'algoritmo su un $\Sigma$-DAG $G_1$, costruito per rappresentare tutte le sottosequenze comuni massime (Longest Common Subsequences, LCS) di due stringhe $X_1 = ABABCDDEE$ e $Y_1 = ABCBAEEDD$, con $K = 3$.
 
@@ -120,7 +116,7 @@ L'esempio mostrato nell'immagine illustra l'applicazione dell'algoritmo su un $\
 
 Alla fine, l'algoritmo identifica una configurazione valida in cui i $K = 3$ cammini hanno la distanza minima richiesta $\Delta = 3$, rispettando i vincoli del problema. Questo dimostra l'efficacia della programmazione dinamica nell'individuare soluzioni ottimali in un grafo compatto come $G_1$.
 
-## Slide 14/24
+## Slide 14/22
 
 Possiamo risolvere questo problema facendo una modifica all'algoritmo precedente.
 
@@ -136,7 +132,7 @@ Passiamo quindi alla definizione della nuova tabella di programmazione dinamica 
 
 Questa rappresentazione consente di catturare la diversità tra i cammini in maniera compatta ed efficiente.
 
-## Slide 15/24
+## Slide 15/22
 
 L'algoritmo si sviluppa attraverso i seguenti passaggi:
 
@@ -163,11 +159,11 @@ L'algoritmo è estremamente efficiente rispetto alla dimensione del problema:
 
 Questa complessità dimostra che l'algoritmo è scalabile, anche per grafi di grandi dimensioni e valori elevati di $K$.
 
-## Slide 16/24
+## Slide 16/22
 
 Vediamo adesso cosa succede se non abbiamo alcun bound per K nel caso del problema Max Sum Diverse String Set. Per risolvere questo problema introduciamo il concetto di Local Search, che ci permette di calcolare soluzioni in spazi metrici finiti. Vedremo ppoi come applicare questo concetto al nostro problema nello spazio delle stringhe di equa lunghezza con distanza di Hamming come metrica.
 
-## Slide 17/24
+## Slide 17/22
 
 La procedura di ricerca locale \textsc{LocalSearch} è un algoritmo progettato per affrontare il problema della _Max-Sum Diversification_ in uno spazio metrico finito $D$. L'obiettivo è ottenere un sottoinsieme di $K$ punti che massimizzi la diversità, calcolata come la somma massima delle distanze tra tutte le coppie di punti nel sottoinsieme selezionato, sotto una metrica semantica $d$. Un aspetto chiave di questa procedura è la sottoprocedura _Farthest Point_, che trova il punto più distante da un insieme di punti già selezionato.
 
@@ -177,7 +173,7 @@ Il funzionamento dell'algoritmo prevede l'inizializzazione di un insieme arbitra
 
 Ciò che resta da capire è come risolvere in maniera efficace il passaggio alla linea 4 dell'algoritmo, ovvero trovare Y
 
-## Slide 18/24
+## Slide 18/22
 
 Dato un insieme $X' \subseteq \Sigma^r$ di stringhe, vogliamo trovare la stringa Y più lontana da tutti gli elementi di $X'$, ovvero la stringa che massimizza la somma delle distanze di Hamming tra Y e gli elementi di $X'$. Questo problema è noto come _Farthest String_ e può essere risolto in tempo polinomiale.
 
@@ -201,29 +197,29 @@ prende in input un $\Sigma$-DAG $G$ per un insieme $L(G) \subseteq \Sigma^r$ di 
 
 Questo algoritmo è ottenuto dall'algoritmo originale sostanzialmente fissando $K-1$ cammini e cercando solo un cammino rimanente che massimizzi la somma delle distanze di Hamming. La usa correttezza e complessità seguono direttamente dall'algoritmo originale.
 
-## Slide 19/24
+## Slide 19/22
 
-Il **lemma** presentato dimostra che, per qualsiasi valore di $K \ge 1$ e $\Delta \ge 0$, dato un grafo $G$ e un sottoinsieme $X' \subseteq L(G)$, l'algoritmo 3 è in grado di calcolare la stringa $r$-farthest $Y \in L(G)$ che massimizza la funzione di diversificazione $Div[sum]{d_H}(X', Y)$ in tempo e spazio $O(K \Delta M)$, dove $M$ è il numero di archi di $G$.
+<!-- Il **lemma** presentato dimostra che, per qualsiasi valore di $K \ge 1$ e $\Delta \ge 0$, dato un grafo $G$ e un sottoinsieme $X' \subseteq L(G)$, l'algoritmo 3 è in grado di calcolare la stringa $r$-farthest $Y \in L(G)$ che massimizza la funzione di diversificazione $Div[sum]{d_H}(X', Y)$ in tempo e spazio $O(K \Delta M)$, dove $M$ è il numero di archi di $G$. -->
 
-Infine gli autori fanno vedere che se K è parte dell'input, allora esiste un approccio di approssimazione polinomiale per il problema \textsc{Max-Sum Diverse String Set} su $Σ$-DAGs. Cosa vuol dire? Che per valori di K piccoli rispetto a un valore $\epsilon$ positivo, l'algoritmo esatto basato su \cref{alg:ExactMaxSumFarthest} risolve il problema in tempo polinomiale. Per valori di K più grandi, viene utilizzato un algoritmo di approssimazione che, combinando la ricerca locale e l'algoritmo di \cref{alg:ExactMaxSumFarthest}, raggiunge un fattore di approssimazione $1-\epsilon$ grazie alla proprietà di tipo negativo della metrica Hamming
+Infine gli autori fanno vedere che se K è parte dell'input, allora esiste un approccio di approssimazione polinomiale per il problema Max-Sum Diverse String Set su $Σ$-DAGs. Cosa vuol dire? Che per valori di K piccoli rispetto a un valore $\epsilon$ positivo, l'algoritmo esatto basato su \cref{alg:ExactMaxSumFarthest} risolve il problema in tempo polinomiale. Per valori di K più grandi, viene utilizzato un algoritmo di approssimazione che, combinando la ricerca locale e l'algoritmo di \cref{alg:ExactMaxSumFarthest}, raggiunge un fattore di approssimazione $1-\epsilon$ grazie alla proprietà di tipo negativo della metrica Hamming
 
-## Slide 20/24
+## Slide 20/22
 
 In questa sezione, vengono presentati algoritmi di tipo _fixed-parameter tractable_ (FPT) per i problemi _Max-Min_ e _Max-Sum Diverse String Set_, parametrizzati in funzione di $K$ e $r$.
 
-## Slide 21/24
+## Slide 21/22
 
 Un problema è considerato FPT se esiste un algoritmo che, dato un input $x$, può essere risolto in un tempo $f(\kappa(x)) \cdot |x|^c$, dove $f(\kappa)$ è una funzione computabile e $c$ è una costante positiva.
 
 Per affrontare questi problemi, si combina la tecnica di _color-coding_ proposta da Alon, Yuster e Zwick con gli algoritmi di programmazione dinamica. L'idea principale consiste nell'assegnare casualmente colori agli archi di un grafo orientato aciclico ($\Sigma$-DAG), creando un grafo colorato noto come $C$-DAG. Viene dimostrato che è possibile ridurre un $C$-DAG a una versione più compatta, mantenendo invariato il linguaggio generato e con un numero di archi limitato da $(rK)^r$.
 
-## Slide 22/24
+## Slide 22/22
 
 Come vediamo dall'immagine, l'algoritmo prevede una fase di pre-elaborazione in cui il grafo $C$-DAG viene ridotto e una fase di ricerca per trovare un sottinsieme $\Delta$-diverso di dimensione $K$. Questa fase richiede un tempo complessivo di $O(2^{rK} r\log(rK) \cdot size(G))$, dove $size(G)$ rappresenta la dimensione dell'input. La probabilità di ottenere un risultato valido è elevata, e la ripetizione di questo processo consente di ottenere un algoritmo FPT.
 
 Un risultato analogo è ottenuto anche per il problema _Max-Sum Diversity_, con una leggera modifica nei dettagli della fase di ricerca, che, in questo caso, ha una complessità di $O(\Delta K^2 M^K)$, dove $M$ è la dimensione dell'input.
 
-## Slide 23/24
+## Slide 23/22
 
 Affrontiamo i risultati di complessità relativi ai problemi di set di stringhe diversificate. Presentiamo risultati negativi che dimostrano che, quando $K$ è parte dell'input, i problemi \textsc{Max-Min} e \textsc{Max-Sum} sono NP-hard per qualsiasi valore costante di $r \ge 3$. Questo implica che, anche con un valore costante della lunghezza delle stringhe, non esiste un algoritmo polinomiale in grado di risolvere questi problemi in modo efficiente, a meno di dimostrare la P = NP. Inoltre, quando parametrizziamo questi problemi con $K$, risulta che sono W[1]-hard, anche quando la rappresentazione dell'input è un $\Sigma$-DAG. Dove per W[1]-hard intendiamo che non esiste un algoritmo FPT per questi problemi, a meno che non si dimostri che FPT = W[1], dove W[1] è una classe di complessità parametrizzata.
 
